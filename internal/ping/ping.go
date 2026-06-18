@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func Run(host string) error {
+func Run(host string, attempts int) error {
 
 	ips, err := net.LookupIP(host)
 
@@ -24,21 +24,22 @@ func Run(host string) error {
 
 		}
 	}
-
 	address := net.JoinHostPort(ipv4, port)
 
-	start := time.Now()
-	conn, err := net.Dial("tcp", address)
+	for i:=0 ; i < attempts ; i++ {
 
-	if err != nil {
-		fmt.Println("Connection Failed to the address: " + address)
-		return nil
+		start := time.Now()
+		conn, err := net.Dial("tcp", address)
+
+		if err != nil {
+			fmt.Println("Connection Failed to the address: " + address)
+			return nil
+		}
+		defer conn.Close()
+		elapsed := time.Since(start).Milliseconds()
+	
+		fmt.Printf("Reply from %s time= %d ms\n", ipv4, elapsed)
 	}
-	defer conn.Close()
-	elapsed := time.Since(start).Milliseconds()
-
-	fmt.Println("Connection successful to address: " + address)
-	fmt.Printf("The total time was: %d ms\n", elapsed)
 
 	return nil
 

@@ -5,11 +5,10 @@ package cmd
 
 import (
 	"fmt"
-
 	"github.com/sanskarOH/speedT/internal/ping"
 	"github.com/spf13/cobra"
 )
-
+var count int
 // pingCmd represents the ping command
 var pingCmd = &cobra.Command{
 	Use:   "ping",
@@ -17,13 +16,13 @@ var pingCmd = &cobra.Command{
 	Long:  "used to run ping test",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			fmt.Println("Usage: speedT ping <host>")
+		if len(args) ==0  {
+			fmt.Println("Usage: speedT ping <host> <no. of attemps>")
 			return
 		}
 		host := args[0]
 		fmt.Println("pinging " + host)
-		err := ping.Run(host)
+		err := ping.Run(host, count)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -33,6 +32,13 @@ var pingCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(pingCmd)
+	pingCmd.Flags().IntVarP(
+		&count,
+		"count",
+		"c",
+		4,
+		"number of ping attempts",
+	)
 
 	// Here you will define your flags and configuration settings.
 
