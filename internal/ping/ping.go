@@ -6,14 +6,14 @@ import (
 	"time"
 )
 
-func Run(host string, attempts int) error {
+func Run(host string, attempts int, port string, timeout int) error {
 
 	ips, err := net.LookupIP(host)
+
 	var lost int
 	var sum int
 	var avg int
 	var ipv4 string
-	var port = "9999"
 
 	if err != nil {
 		return err
@@ -30,16 +30,18 @@ func Run(host string, attempts int) error {
 	if ipv4 == "" {
 		return fmt.Errorf("no IPV4 address found")
 	}
+	fmt.Printf("pinging %s [%s] on port %s\n", host, ipv4, port)
+	// fmt.Printf("Resolved %s -> %s\n", host, ipv4)
 	address := net.JoinHostPort(ipv4, port)
 
 	for i := 0; i < attempts; i++ {
 
 		start := time.Now()
-		conn, err := net.DialTimeout("tcp", address, 3*time.Second)
+		conn, err := net.DialTimeout("tcp", address, time.Duration(timeout)*time.Second)
 		elapsed := time.Since(start).Milliseconds()
 
 		if err != nil {
-			fmt.Println("Connection Failed to the address: " + address)
+			fmt.Printf("Connection Failed: (%v)\n ", err)
 			lost++
 			continue
 		}
@@ -60,8 +62,8 @@ func Run(host string, attempts int) error {
 		fmt.Printf("Ping successful on %s Packets sent = %d Packets recieved = %d  Latency= %dms ", ipv4, attempts, recieved, avg)
 
 	} else {
-		fmt.Printf("Ping unsuccessful on %s Packets sent = %d Packets recieved = %d  Latency= %dms ", ipv4, attempts, recieved, avg)
-		fmt.Printf("Host unreacheable on TCP port.")
+		fmt.Printf("Ping unsuccessful on %s Packets sent = %d Packets recieved = %d  Latency= %dms\n", ipv4, attempts, recieved, avg)
+		fmt.Printf("No response from service at TCP port %s .", port)
 	}
 
 	return nil

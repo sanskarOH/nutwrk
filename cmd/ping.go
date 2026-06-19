@@ -5,24 +5,40 @@ package cmd
 
 import (
 	"fmt"
+	"strconv"
+
 	"github.com/sanskarOH/speedT/internal/ping"
 	"github.com/spf13/cobra"
 )
+
 var count int
+var port int
+var timeout int
+
 // pingCmd represents the ping command
 var pingCmd = &cobra.Command{
-	Use:   "ping",
-	Short: "A brief description of your command",
-	Long:  "used to run ping test",
-	Args:  cobra.ExactArgs(1),
+	Use:   "ltc",
+	Short: "Measure TCP latency to a host",
+	Long: `
+	Ping a host by establishing TCP connections to a target port and 
+	measuring the connection latency.
+
+	The command resolves the hostname, extracts an IPv4 address,
+	attempts TCP connections, and reports latency statistics such as
+	average response time and packet loss.
+
+	Examples:
+  	nutwrk ltc google.com
+  	nutwrk ltc google.com -c 10
+  	nutwrk ltc localhost -p 8080
+	nutwrk ltc google.com -c 5 -p 8080 -t 5`,
+
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) ==0  {
-			fmt.Println("Usage: speedT ping <host> <no. of attemps>")
-			return
-		}
+
 		host := args[0]
-		fmt.Println("pinging " + host)
-		err := ping.Run(host, count)
+
+		err := ping.Run(host, count, strconv.Itoa(port), timeout)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -38,6 +54,20 @@ func init() {
 		"c",
 		4,
 		"number of ping attempts",
+	)
+	pingCmd.Flags().IntVarP(
+		&port,
+		"port",
+		"p",
+		443,
+		"port of the server",
+	)
+	pingCmd.Flags().IntVarP(
+		&timeout,
+		"timeout",
+		"t",
+		1,
+		"timeout in seconds",
 	)
 
 	// Here you will define your flags and configuration settings.
