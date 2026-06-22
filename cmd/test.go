@@ -15,7 +15,7 @@ var size string
 var testCmd = &cobra.Command{
 	Use:   "test",
 	Short: "Measure download speed using a configurable test file",
-	Long: `Run an internet download speed benchmark by downloading
+	Long: `Run an internet download speed benchmark test by downloading
 a test file from a remote server and measuring the transfer rate.
 
 The command reports:
