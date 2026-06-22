@@ -59,7 +59,7 @@ The project explores:
 
 # Installation & Usage
 
-## Download a Prebuilt Release
+## Download a Prebuilt Release (Under Planning)
 
 1. Go to the Releases page.
 2. Download the archive for your operating system.
