@@ -1,73 +1,128 @@
 # nutwrk
 
-A lightweight, fast, and educational network diagnostics CLI written in Go.
+A lightweight network diagnostics and benchmarking CLI written in Go.
 
-nutwrk helps measure network performance by testing latency, jitter, download speed, upload speed, and packet loss directly from the terminal.
+**nutwrk** helps developers and enthusiasts measure network performance directly from the terminal by providing latency analysis, packet loss detection, jitter statistics, and download speed benchmarking.
 
-This project is built as a learning exercise to explore:
-
-* Go
-* Networking fundamentals
-* TCP & UDP
-* DNS Resolution
-* Concurrency with Goroutines
-* CLI Development with Cobra
-* System Design
+Built from scratch as a learning project to understand how modern networking and speed-testing tools work under the hood.
 
 ---
 
 ## Features
 
-### Current
+### Implemented
 
 * DNS Resolution
-* Latency Measurement
+* TCP Latency Measurement
+* Packet Loss Detection
+* Average Latency Statistics
+* Jitter Calculation
+* Download Speed Benchmark
+* Download Progress Tracking
+* Custom Download Test Sizes
+* Configurable Timeout & Ports
+* IPv4 Resolution
 
 ### Planned
 
-* Jitter Calculation
-* Download Speed Test
-* Upload Speed Test
-* Multi-threaded Testing
-* Packet Loss Detection
+* Upload Speed Testing
+* Multi-stream Download Benchmarking
 * Automatic Server Selection
-* Metrics & Monitoring
 * ICMP Ping Support
+* Historical Metrics
+* Exportable Reports
+* Geo-based Server Discovery
 
 ---
 
-## Project Goals
+## Why nutwrk?
 
-The objective of nutwrk is not only to provide a speed testing utility but also to serve as a hands-on learning project for understanding how network diagnostic tools work under the hood.
+Most developers use networking tools every day but rarely understand how they work internally.
 
-By building nutwrk, you'll learn:
+nutwrk is designed to be both:
 
-* How DNS works
-* How TCP connections are established
-* How latency is measured
-* How bandwidth is calculated
-* How speed test servers operate
-* How concurrent network applications are built in Go
+1. A practical network benchmarking utility.
+2. A hands-on systems programming project for learning networking concepts in Go.
+
+The project explores:
+
+* DNS lookups
+* TCP connection establishment
+* Latency measurement
+* Packet loss detection
+* Jitter calculation
+* Throughput measurement
+* HTTP streaming
+* Concurrent network applications
 
 ---
 
-## Architecture
+## Commands
+
+### LTC (Latency Test Command)
+
+Measure TCP latency to a host.
+
+```bash
+nutwrk ltc google.com
+```
+
+Example:
 
 ```text
-User
- │
- ▼
-nutwrk CLI
- │
- ├── DNS Resolution
- │
- ├── TCP Connection
- │
- ├── Latency Measurement
- │
- ├── Download Benchmark
- │
- └── Upload Benchmark
+pinging google.com [142.250.xxx.xxx] on port 443
+
+Reply from 142.250.xxx.xxx time= 41 ms
+Reply from 142.250.xxx.xxx time= 39 ms
+Reply from 142.250.xxx.xxx time= 42 ms
+Reply from 142.250.xxx.xxx time= 40 ms
+
+Ping Statistics
+---------------
+Packets Sent     : 4
+Packets Received : 4
+Packet Loss      : 0%
+Average Latency  : 40 ms
+Jitter           : 1.3 ms
+```
+
+### Download Benchmark
+
+Measure download throughput using configurable test file sizes.
+
+```bash
+nutwrk test
+```
+
+```bash
+nutwrk test -s 10mb
+```
+
+```bash
+nutwrk test -s 100mb
+```
+
+```bash
+nutwrk test -s 1gb
+```
+
+Example:
+
+```text
+Connected to the server successfully
+Status: 200 OK
+
+Progress: 25%
+Progress: 50%
+Progress: 75%
+Progress: 100%
+
+--- Download Statistics ---
+
+File Size          : 100.00 MB
+Downloaded         : 100.00 MB
+Time Taken         : 12.34 s
+Download Speed     : 67.97 Mbps
 ```
 
 ---
@@ -79,142 +134,46 @@ nutwrk/
 
 ├── cmd/
 │   ├── root.go
-│   ├── ping.go
-│   ├── download.go
-│   └── upload.go
+│   ├── ltc.go
+│   └── test.go
 │
 ├── internal/
-│   ├── ping/
-│   │   ├── ping.go
-│   │   ├── dns.go
-│   │   ├── tcp.go
-│   │   └── stats.go
+│   ├── ltc/
+│   │   └── ltc.go
 │   │
-│   ├── download/
-│   ├── upload/
-│   ├── jitter/
-│   └── packetloss/
-│
-├── pkg/
-│   ├── network/
-│   ├── metrics/
-│   └── utils/
-│
-├── tests/
+│   └── test/
+│       └── test.go
 │
 ├── go.mod
+├── go.sum
 └── README.md
 ```
 
 ---
 
-## Installation
+## Roadmap
 
-### Clone Repository
+### Networking
 
-```bash
-git clone https://github.com/sanskarOH/nutwrk.git
-
-cd nutwrk
-```
-
-### Install Dependencies
-
-```bash
-go mod tidy
-```
-
-### Build
-
-```bash
-go build -o nutwrk
-```
-
-### Run
-
-```bash
-./nutwrk
-```
-
----
-
-## Usage
-
-### Check latency of a Host
-
-```bash
-nutwrk ltc google.com
-```
-
-Example Output:
-
-```text
-Host: google.com
-IP: 142.250.xxx.xxx
-
-Latency: 14ms
-```
-
----
-
-### check latency Multiple Times
-
-```bash
-nutwrk ltc google.com -c 5
-```
-
-Example Output:
-
-```text
-Reply 1: 14ms
-Reply 2: 12ms
-Reply 3: 15ms
-Reply 4: 13ms
-Reply 5: 14ms
-
-Min: 12ms
-Max: 15ms
-Avg: 13.6ms
-```
-
----
-
-## Development Roadmap
-
-### Phase 1
-
-* [x] Project Setup
 * [x] DNS Resolution
-* [x] Latency Check
-* [x] Latency Statistics
-
-### Phase 2
-
+* [x] TCP Latency Measurement
+* [x] Packet Loss Detection
 * [x] Jitter Calculation
+* [x] Download Benchmark
 
-### Phase 3
+### Performance Testing
 
-* [x] Download Speed Test
-* [ ] Throughput Measurement
+* [ ] Upload Benchmark
+* [ ] Multi-stream Downloads
+* [ ] Adaptive Benchmark Duration
+* [ ] Dynamic Server Selection
 
-### Phase 4
+### Systems Programming
 
-* [ ] Upload Speed Test
-
-### Phase 5
-
-* [ ] Multi-threaded Connections
-* [ ] Goroutine Worker Pool
-
-### Phase 6
-
-* [ ] Custom Benchmark Server
-
-### Phase 7
-
-* [ ] Server Discovery
-* [ ] Geo-based Selection
-
+* [ ] Worker Pools
+* [ ] Concurrent Downloads
+* [ ] Context Cancellation
+* [ ] Metrics Collection
 
 ---
 
@@ -223,48 +182,91 @@ Avg: 13.6ms
 * Go
 * Cobra CLI
 * TCP
-* UDP
 * DNS
-* HTTP
-
----
-
-## Learning Outcomes
-
-This project explores:
-
-### Networking
-
-* DNS
-* TCP
-* UDP
 * HTTP
 * TLS
-* Packet Routing
-
-### Go
-
-* Packages
-* Modules
-* Interfaces
-* Error Handling
-* Goroutines
-* Channels
-* Context
-
-### System Design
-
-* Client-Server Architecture
-* Benchmarking
-* Concurrent Systems
-* Observability
 
 ---
+## Development Phases
 
-## License
+### Phase 1 — Core Networking
 
-MIT License
+* [x] Project Setup
+* [x] Cobra CLI Integration
+* [x] Command Structure
+* [x] DNS Resolution
+* [x] IPv4 Address Extraction
+* [x] TCP Connection Testing
 
+### Phase 2 — Latency Analysis
+
+* [x] TCP-based Latency Measurement
+* [x] Packet Loss Detection
+* [x] Average Latency Statistics
+* [x] Min / Max Latency Tracking
+* [x] Jitter Calculation
+
+### Phase 3 — Download Benchmarking
+
+* [x] HTTP Connectivity Testing
+* [x] Streaming Downloads
+* [x] Throughput Measurement
+* [x] Download Progress Tracking
+* [x] Configurable Test Sizes
+* [x] Human-readable Statistics
+
+### Phase 4 — Upload Benchmarking
+
+* [ ] HTTP Upload Benchmark
+* [ ] Upload Throughput Measurement
+* [ ] Upload Progress Tracking
+* [ ] Configurable Upload Payloads
+
+### Phase 5 — Advanced Benchmarking
+
+* [ ] Multi-stream Downloads
+* [ ] Parallel Connection Testing
+* [ ] Adaptive Benchmark Duration
+* [ ] Dynamic Test Scaling
+* [ ] Sustained Throughput Analysis
+
+### Phase 6 — Intelligent Server Selection
+
+* [ ] Server Discovery
+* [ ] Latency-based Ranking
+* [ ] Geo-aware Selection
+* [ ] Automatic Best Server Detection
+
+### Phase 7 — Systems & Concurrency
+
+* [ ] Goroutine Worker Pools
+* [ ] Context Cancellation
+* [ ] Concurrent Benchmark Execution
+* [ ] Rate Limiting
+* [ ] Connection Pooling
+
+### Phase 8 — Observability
+
+* [ ] Metrics Collection
+* [ ] Historical Benchmark Results
+* [ ] JSON Output Support
+* [ ] Exportable Reports
+* [ ] Prometheus Integration
+
+### Phase 9 — Protocol Expansion
+
+* [ ] ICMP Ping Support
+* [ ] UDP Benchmarking
+* [ ] Traceroute
+* [ ] DNS Benchmarking
+* [ ] TLS Handshake Timing
+
+### Phase 10 — Custom Infrastructure
+
+* [ ] Custom Benchmark Server
+* [ ] Self-hosted Test Nodes
+* [ ] Distributed Benchmarking
+* [ ] Regional Performance Comparison
 ---
 
 ## Author
@@ -273,4 +275,4 @@ MIT License
 
 GitHub: https://github.com/sanskarOH
 
-Built to learn how networking tools work under the hood.
+Built to learn networking, systems programming, and performance engineering through real-world tooling.

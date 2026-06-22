@@ -14,12 +14,29 @@ var size string
 // testCmd represents the test command
 var testCmd = &cobra.Command{
 	Use:   "test",
-	Short: "to test the download and upload speed",
-	Long: `It is used to test the download and upload speed of the internet
-			Usage = nutwrk test`,
+	Short: "Measure download speed using a configurable test file",
+	Long: `Run an internet download speed benchmark by downloading
+a test file from a remote server and measuring the transfer rate.
+
+The command reports:
+  • File size
+  • Download progress
+  • Total transfer time
+  • Average download speed (Mbps)
+
+Supported test sizes:
+  • 1mb
+  • 10mb
+  • 100mb
+  • 1gb
+
+Examples:
+  nutwrk test
+  nutwrk test -s 10mb
+  nutwrk test -s 100mb
+  nutwrk test -s 1gb`,
 	Run: func(cmd *cobra.Command, args []string) {
 		test.Check(size)
-
 	},
 }
 
@@ -30,7 +47,7 @@ func init() {
 		"size",
 		"s",
 		"100mb",
-		"size of the test file downloaded",
+		"size of the download test file (1mb, 10mb, 100mb, 1gb)",
 	)
 	// Here you will define your flags and configuration settings.
 
